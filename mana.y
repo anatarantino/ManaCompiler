@@ -8,7 +8,7 @@
 /* program */
 %token START;
 %token END;
-%token END_LINE;
+%token DELIMITER;
 
 /* data types */
 %token TEXT; //TODO
@@ -48,12 +48,13 @@
 BEGIN: INIT MAIN FINISH;
 
 /* program */
-INIT: START {printf("#include <stdio.h>\n#include <stdlib.h>\n
-	#include <strings.h>\n);printf("int main (void){");};
+INIT: START {printf("#include <stdio.h>\n#include <stdlib.h>\n#include <strings.h>\n");printf("int main (void){");};
+
+MAIN:
 
 FINISH: END {printf("}");};
 
-ENDLINE: END_LINE {printf(";");};
+DELIMITER_OP: DELIMITER {printf(";");};
 
 /* arithmetic operators */
 MINUS_OP: MINUS {printf("-");};

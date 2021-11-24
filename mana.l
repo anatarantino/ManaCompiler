@@ -2,7 +2,7 @@
 /* program */
 START "start"
 END "end"
-END_LINE ";"
+END_LINE "."
 
 /* data types */
 TEXT "text "
@@ -21,8 +21,6 @@ DIVIDE " / "
 /* relational operators */
 LOWER_THAN " < "
 GREATER_THAN " > "
-LOWER_EQUAL " <= "
-GREATER_EQUAL " >= "
 IS_EQUAL " is equal to "
 NOT_EQUAL " is not equal to "
 
@@ -38,6 +36,7 @@ ASSIGNMENT " = "
 IF "if"
 ELSE "else"
 WHILE "while"
+DO "repeat:"
 
 int yyerror(const char *msg)
 {

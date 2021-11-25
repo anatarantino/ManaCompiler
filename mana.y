@@ -19,6 +19,9 @@ char * tok;
 %token TEXT; //TODO
 %token NUMBER; //TODO
 
+%token INTLIST;
+%token STLIST;
+
 %token <string> STRING; //TODO fijarse como declarar variable
 %token <number> INTEGER; //TODO mismo que string, fijarse como declarar variable
 %token <string> VARIABLE_NAME;
@@ -164,7 +167,45 @@ VAR_NAME_OK: VARIABLE_NAME {
 	}else{
 		printf("%s",$1);
 	}
+};
 
+NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find(variables,$1,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
+	if(strcmp(type, "INTEGERLIST")!=0){
+		//error
+	}
+};
+
+TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find(variables,$1,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
+	if(strcmp(type, "STRINGLIST")!=0){
+		//error
+	}
+};
+
+VAR_NAME: VARIABLE_NAME {
+	int found = 0;
+	if(find(variables,$1,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
 };
 
 INSTRUCTION: 	DECLARATION DELIMITER_OP
@@ -206,6 +247,8 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			aux[strlen($2)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
+
+DECLARATION:
 
 STRING_ASSIGN: ASSIGN_TEXT TEXT_OP;
 

@@ -14,7 +14,8 @@ STRING ["][^\n\r]*["]
 NUMBER "number "
 INTEGER [-]?[0-9]+
 VARIABLE_NAME [a-zA-Z]+[_0-9A-Za-z]*
-
+INTLIST "number list "
+STLIST "text list"
 /* constants and delimiters */
 DELIMITER "."
 

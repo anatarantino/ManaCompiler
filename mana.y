@@ -44,6 +44,7 @@
 %token WHILE;
 %token DO;
 
+
 %%
 BEGIN: INIT MAIN FINISH;
 
@@ -92,4 +93,5 @@ ELSE_OP: ELSE {printf("}else{");};
 WHILE_OP: WHILE {printf("}while(");};
 
 DO_OP: DO {printf("do{");};
+
 

@@ -7,7 +7,6 @@
 /* program */
 START "start"
 END "end"
-DELIMITER "."
 
 /* data types */
 TEXT "text "
@@ -16,6 +15,7 @@ NUMBER "number "
 INTEGER [-]?[0-9]+
 
 /* constants and delimiters */
+DELIMITER "."
 
 /* arithmetic operators */
 MINUS " - "
@@ -43,6 +43,7 @@ ELSE "else"
 WHILE "while"
 DO "repeat:"
 
+
 %%
 
 /* rules */
@@ -69,6 +70,7 @@ DO "repeat:"
 {ELSE} {return ELSE;}
 {WHILE} {return WHILE;}
 {DO} {return DO;}
+
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

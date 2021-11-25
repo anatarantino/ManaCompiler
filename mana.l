@@ -13,6 +13,7 @@ TEXT "text "
 STRING ["][^\n\r]*["]
 NUMBER "number "
 INTEGER [-]?[0-9]+
+VARIABLE_NAME [a-zA-Z]+[_0-9A-Za-z]*
 
 /* constants and delimiters */
 DELIMITER "."
@@ -34,6 +35,9 @@ AND " && "
 OR " || "
 NOT " not "
 
+TRUE "true"
+FALSE "false"
+
 /* assignment operators */
 ASSIGNMENT " = "
 
@@ -43,7 +47,6 @@ ELSE "else"
 WHILE "while"
 DO "repeat:"
 
-
 %%
 
 /* rules */
@@ -51,9 +54,9 @@ DO "repeat:"
 {END} {return END}
 {DELIMITER} {return DELIMITER}
 {TEXT} {return TEXT;}
-{STRING} {return yylval.string = yytext;}
+{STRING} {return yylval.string = yytext; return STRING;}
 {NUMBER} {return NUMBER;}
-{INTEGER} {return yylval.number=atoi(yytext);}
+{INTEGER} {return yylval.number=atoi(yytext); return INTEGER;}
 {MINUS} {return MINUS;}
 {PLUS} {return PLUS;}
 {MULTIPLY} {return MULTIPLY;}
@@ -65,12 +68,14 @@ DO "repeat:"
 {AND} {return AND;}
 {OR} {return OR;}
 {NOT} {return NOT;}
+{TRUE} {return TRUE;}
+{FALSE} {return FALSE;};
 {ASSIGNMENT} {return ASSIGNMENT;}
 {IF} {return IF;}
 {ELSE} {return ELSE;}
 {WHILE} {return WHILE;}
 {DO} {return DO;}
-
+{VARIABLE_NAME} {yylval.string = yytext; return VARIABLE_NAME;}
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

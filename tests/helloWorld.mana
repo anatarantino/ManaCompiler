@@ -1,0 +1,7 @@
+start
+
+    text = "hola anita".
+    print text.
+
+end
+

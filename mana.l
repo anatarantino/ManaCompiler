@@ -53,11 +53,12 @@ PRINT_INT "print number: "
 PRINT_STRING "print text: "
 PRINT_NUM_LIST "print number list: "
 PRINT_TEXT_LIST "print text list: "
+STARTS_WITH " starts with "
 ADD "add "
 DELETE "delete "
 NUMBER_FROM_LIST " to number list "
 TEXT_FROM_LIST " to text list "
-
+NEW "new "
 %%
 
 /* rules */

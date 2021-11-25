@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_LENGTH 15
+
 char type[7]; aux vector to save datatype to list node
 list * variables;
 char var[60];
@@ -61,14 +63,21 @@ char * tok;
 %token PRINT_STRING;
 %token PRINT_NUM_LIST;
 %token PRINT_TEXT_LIST;
+%token STARTS_WITH;
 %token ADD;
 %token DELETE;
-%token NUMBER_FROM_LIST;
-%token TEXT_FROM_LIST;
+%token NEW;
 
 %type<string> NUM_LIST_VAR_NAME_OK;
 %type<string> TEXT_LIST_VAR_NAME_OK;
 %type<string> DECLARATION;
+%type<string> TYPE;
+%type<string> VAR_NAME;
+%type<string> NUM_LIST_VAR_NAME;
+%type<string> TEXT_LIST_VAR_NAME;
+%token<string> NUMBER_FROM_LIST;
+%token<string> TEXT_FROM_LIST;
+%token<string> LIST_VAR_NAME;
 
 %start BEGIN;
 
@@ -197,7 +206,7 @@ TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
 	}
 };
 
-VAR_NAME: VARIABLE_NAME {
+VAR_NAME_OP: VARIABLE_NAME {
 	int found = 0;
 	if(find(variables,$1,type)){
 		found = 1;
@@ -207,6 +216,8 @@ VAR_NAME: VARIABLE_NAME {
 		//TODO error
 	}
 };
+
+VAR_NAME: VARIABLE_NAME {$$=$1, printf("%s",$$);};
 
 INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| DECLARATION STRING_ASSIGN DELIMITER_OP
@@ -240,7 +251,7 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			strcpy(aux, $2);
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
-			printf("remove_from_text_list(%s,%s);",aux,var);
+			printf("remove_from_list(%s,%s);",aux,var);
 		}
 		| DELETE NUMBER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
@@ -248,7 +259,48 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
 
-DECLARATION:
+DECLARATION: 	NEW TYPE VAR_NAME{
+			if(strlen($3) < MAX_LENGTH){
+				if(!find(variables,$3,type)){
+					strcpy(aux,$2);
+					add_to_list($3,aux,symbol_table);
+				}else{
+					//TODO error
+				}
+			}else{
+				//TODO error
+			}
+			$$=$3;
+		}
+		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
+			if(strlen($3) < MAX_LENGTH){
+				if(!find(variables,$3,type)){
+					strcpy(type,"INTEGERLIST");
+					add_to_list($3,type,symbol_table);
+				}else{
+					//TODO error
+				}
+				prinft(" = create_list(%s)",$5);
+			}else{
+				//TODO error
+			}
+		};
+		| NEW STLIST LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
+			if(strlen($3) < MAX_LENGTH){
+				if(!find(variables,$3,type)){
+					strcpy(type,"INTEGERLIST");
+					add_to_list($3,type,symbol_table);
+				}else{
+					//TODO error
+				}
+				prinft(" = create_list(%s)",$5);
+			}else{
+				//TODO error
+			}
+		}
+
+
+TYPE: TEXT {$$="TEXT"; printf("char *");} | NUMBER {$$="NUMBER"; printf("int ");};
 
 STRING_ASSIGN: ASSIGN_TEXT TEXT_OP;
 

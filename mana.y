@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+char type[7]; aux vector to save datatype to list node
+list * variables;
+char var[60];
+char aux[60];
+char * tok;
 %}
 
 /* program */
@@ -94,7 +99,7 @@ ASSIG: ASSIGNMENT {printf("=");};
 
 CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
 
-WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_OP END_WHILE_OP; //TODO COMPLETAR
+WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP; //TODO COMPLETAR
 
 IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
 
@@ -105,6 +110,8 @@ ELSE_OP: ELSE {printf("}else{");};
 WHILE_OP: WHILE {printf("}while(");};
 
 DO_OP: DO {printf("do{");};
+
+END_WHILE_OP: DELIMITER {printf(");");};
 
 /* aux */
 
@@ -132,6 +139,62 @@ TERM_STATE: NUMBER_OP | VAR_NAME_OK
 
 NUMBER_OP: INTEGER {printf("%d", $1);};
 
-VAR_NAME_OK: //TODO;
+VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find(variables,$1,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}else{
+		printf("%s",$1);
+	}
+
+};
+
+
+
+
+
+INSTRUCTION: 	DECLARATION DELIMITER_OP
+		| DECLARATION STRING_ASSIGN DELIMITER_OP
+		| DECLARATION NUM_ASSIGN DELIMITER_OP
+		| VAR_NAME_OK STRING_ASSIGN DELIMITER_OP
+		| VAR_NAME_OK NUM_ASSIGN DELIMITER_OP
+		| PRINT_TEXT DELIMITER_OP
+		| PRINT_NUM DELIMITER_OP
+		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(var,$2);
+			var[strlen($2)-1] = 0;
+			printf("print_text_list(%s);",var);
+		}
+		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(var,$2);
+			var[strlen($2)-1] = 0;
+			printf("print_number_list(%s);",var);
+		}
+		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux,$2);
+			strcpy(var,$4);
+			var[strlen($4)-1] = 0;
+			printf("add_to_text_list(%s,%s);",aux,var);
+		}
+		| ADD NUMBER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			aux[strlen($2)-1]=0;
+			printf("add_to_number_list(%d,%s);",$2, aux);
+		}
+		| REMOVE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			strcpy(var, $4);
+			var[strlen($4)-1] = 0;
+			printf("remove_from_text_list(%s,%s);",aux,var);
+		}
+		| REMOVE NUMBER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			aux[strlen($2)-1]=0;
+			printf("remove_from_number_list(%d,%s);",$2, aux);
+		}
 
 

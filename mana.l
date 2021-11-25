@@ -47,6 +47,16 @@ ELSE "else"
 WHILE "while"
 DO "repeat:"
 
+/* aux */
+PRINT_INT "print number: "
+PRINT_STRING "print text: "
+PRINT_NUM_LIST "print number list: "
+PRINT_TEXT_LIST "print text list: "
+ADD "add "
+DELETE "delete "
+NUMBER_FROM_LIST " to number list "
+TEXT_FROM_LIST " to text list "
+
 %%
 
 /* rules */

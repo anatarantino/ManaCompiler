@@ -53,6 +53,20 @@ char * tok;
 %token WHILE;
 %token DO;
 
+/* aux */
+%token PRINT_INT;
+%token PRINT_STRING;
+%token PRINT_NUM_LIST;
+%token PRINT_TEXT_LIST;
+%token ADD;
+%token DELETE;
+%token NUMBER_FROM_LIST;
+%token TEXT_FROM_LIST;
+
+%type<string> NUM_LIST_VAR_NAME_OK;
+%type<string> TEXT_LIST_VAR_NAME_OK;
+%type<string> DECLARATION;
+
 %start BEGIN;
 
 %%
@@ -153,10 +167,6 @@ VAR_NAME_OK: VARIABLE_NAME {
 
 };
 
-
-
-
-
 INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| DECLARATION STRING_ASSIGN DELIMITER_OP
 		| DECLARATION NUM_ASSIGN DELIMITER_OP
@@ -185,16 +195,37 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			aux[strlen($2)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
 		}
-		| REMOVE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
 			printf("remove_from_text_list(%s,%s);",aux,var);
 		}
-		| REMOVE NUMBER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE NUMBER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
 			aux[strlen($2)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
+
+STRING_ASSIGN: ASSIGN_TEXT TEXT_OP;
+
+ASSIGN_TEXT: ASSIGNMENT {printf("=");};
+
+NUM_ASSIGN: ASSIGN_TEXT EXP;
+
+PRINT_NUM: PRINT_INT_OP PRINT_NUM_END;
+
+PRINT_INT_OP: PRINT_INT {printf(\"");};
+
+PRINT_NUM_END: VARIABLE_NAME {printf("\"%%d\",%s)",$1);};
+
+PRINT_TEXT: PRINT_TEXT_OP PRINT_TEXT_END;
+
+PRINT_TEXT_OP: PRINT_STRING {printf("printf(");};
+
+TEXT_OP: STRING {printf($1);};
+
+PRINT_TEXT_END: VARIABLE_NAME {printf("\"%%s\",%s)",$1);}; | TEXT_OP {printf(")");};
+
 
 

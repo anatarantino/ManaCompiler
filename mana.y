@@ -218,7 +218,7 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(var,$2);
 			var[strlen($2)-1] = 0;
-			printf("print_text_list(%s);",var);
+			printf("print_list(%s);",var);
 		}
 		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(var,$2);

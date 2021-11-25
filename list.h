@@ -9,17 +9,16 @@ typedef struct node {
 
 typedef node * list;
 
-list * create_list(char * list_nama);
+list * create_list(char * data);
 
-int add_to_list(char * data, char * type, list * list_name);
-int add_to_text_list(char * data,list * list_name);
+int add_to_list(char * data, char * type, list * list);
+int add_to_text_list(char * data,list * list);
 
-int remove_from_list(char * data, list * list_name);
-int remove_from_text_list(char * data,list * list_name);
+int remove_from_list(char * data, list * list);
 
-void print_list(list * list_name);
+void print_list(list * list);
 
-int find(char * data, list * list);
+int find(char * data, list * list, char * type);
 
 void free_list(list * list);
 

@@ -1,3 +1,9 @@
 start
-    new text prueba.
+    new text a = "hola anita".
+    new number b = 14.
+    new number c.
+    new text d.
+
+    new text list prueba.
+    add  "holis" to text list prueba.
 end

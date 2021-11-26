@@ -1,13 +1,13 @@
 #ifndef MANACOMPILER_LIST_H
 #define MANACOMPILER_LIST_H
 
-typedef struct node {
-    char * data;
-    char * type;
+ struct node {
+    char data[30];
+    char type[10];
     struct node * next;
-}node;
+};
 
-typedef node * list;
+typedef struct node * list;
 
 list * create_list(char * data);
 

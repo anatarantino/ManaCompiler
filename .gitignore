@@ -4,3 +4,7 @@
 .idea/
 
 y.output
+
+mana.out.dSYM/Contents/Info.plist
+
+mana.out.dSYM/Contents/Resources/DWARF/mana.out

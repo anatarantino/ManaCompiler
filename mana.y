@@ -104,15 +104,18 @@ MAIN: CONDITIONAL MAIN | INSTRUCTION MAIN | {};
 
 FINISH: END {printf("}");};
 
-DECLARATION: 	NEW TYPE VAR_NAME{
+DECLARATION: NEW TYPE VAR_NAME{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find($3,variables,type)){
+				strcpy(aux,$3);
+				if(!find(aux,variables,type)){
 					add_to_list($3,$2,variables);
 				}else{
-					//TODO error
+					fprintf(stderr, "Variable name '%s' is already defined.\n",$3);
+					YYABORT;
 				}
 			}else{
-				//TODO error
+				fprintf(stderr, "Variable name '%s' is too long.\n",$3);
+				yyerror("Variable name error");
 			}
 			$$=$3;
 		}
@@ -167,6 +170,19 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 			}else{
 				//TODO error
 			}
+		}
+		| NEW STLIST LIST_VAR_NAME{
+			if(strlen($3) < MAX_LENGTH){
+					if(!find($3,variables,type)){
+						strcpy(type,"TEXT_LIST");
+						add_to_list($3,type,variables);
+					}else{
+						//TODO error
+					}
+					printf(" = create_list(NULL)");
+				}else{
+					//TODO error
+				}
 		};
 
 INSTRUCTION: 	DECLARATION DELIMITER_OP
@@ -370,7 +386,7 @@ int yywrap()
 int main(void){
 	variables = create_list("");
 	yyparse();
-	free(variables);
+	free_list(variables);
 }
 
 

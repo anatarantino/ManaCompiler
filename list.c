@@ -4,30 +4,29 @@
 #include <stdio.h>
 
 list * create_list(char * data){
-    node * new_node;
+    struct node * new_node;
     list * new_list = (list *)malloc(sizeof (list));
     *new_list = (struct node *)malloc(sizeof (struct node));
     new_node = *new_list;
     strcpy(new_node->data, data);
-    new_node->type = "";
+    strcpy(new_node->type,"");
     new_node->next = NULL;
     return new_list;
 }
 
 //returns 1 if added and 0 if not
 int add_to_list(char * data, char * type, list * list){
-    node *new_node, *current, *prev = NULL;
+    struct node *new_node, *current, *prev = NULL;
     if(list == NULL){
         fprintf(stderr,"Error adding to list: list doesn't exist.\n");
         return 0;
     }
     current = *list;
-    if(current->data == NULL){ //list is empty
+    if(strcmp(current->data,"") == 0){ //list is empty
         strcpy(current->data, data);
-        current->type = type;
+        strcpy(current->type,type);
         return 1;
     }
-
     new_node = (struct node *)malloc(sizeof (struct node));
     strcpy(new_node->data, data);
     strcpy(new_node->type,type);
@@ -37,7 +36,7 @@ int add_to_list(char * data, char * type, list * list){
     return 1;
 }
 
-//TODO: chequear que pasa cuando quiero remover el unico elemento que tiene una lista. Lo que hice fue ponerle que todo este en null pero no se si no habria que borrar la lista
+//TODO: chequear que pasa cuando quiero remover el unico elemento que tiene una lista. Lo que hice fue ponerle que todo sea el string vacio pero no se si no habria que borrar la lista
 //returns 1 if removed and 0 if not
 int remove_from_list(char * data, list * list){
 
@@ -45,12 +44,12 @@ int remove_from_list(char * data, list * list){
         fprintf(stderr, "Error removing from list: list does not exist.\n" );
         return 0;
     }
-    node * current = *list;
+    struct node * current = *list;
 
     if(strcmp(current->data, data) == 0){
         if(current->next == NULL){ //it's the only item
-            current->data = NULL;
-            current->type = NULL;
+            strcpy(current->data, "");
+            strcpy(current->type,"");
             return 1;
         }else{
             *list = current->next;
@@ -58,7 +57,7 @@ int remove_from_list(char * data, list * list){
             return 1;
         }
     }
-    node * prev = current;
+    struct node * prev = current;
     current = current->next;
 
     //loop through list to find node
@@ -89,7 +88,7 @@ int add_to_text_list(char * data,list * list){
 
 
 void print_list(list * list){
-    node * current = *list;
+    struct node * current = *list;
     while(current != NULL){
         if(current->next != NULL){
             printf("%s, ",current->data);
@@ -101,7 +100,7 @@ void print_list(list * list){
 }
 
 int find(char * data, list * list, char * type){
-    node * current = *list;
+    struct node * current = *list;
     while(current != NULL){
         if(strcmp(current->data,data)==0){
             strcpy(type,current->type);
@@ -113,8 +112,8 @@ int find(char * data, list * list, char * type){
 }
 
 void free_list(list * list){
-    node * current = *list;
-    node * next;
+    struct node * current = *list;
+    struct node * next;
     while(current != NULL){
         next = current->next;
         free(current);

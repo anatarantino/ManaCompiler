@@ -18,7 +18,7 @@ NUMBER "number "
 INTEGER [-]?[0-9]+
 VARIABLE_NAME [a-zA-Z]+[_0-9A-Za-z]*
 INTLIST "number list "
-STLIST "text list"
+STLIST "text list "
 /* constants and delimiters */
 DELIMITER "."
 
@@ -97,6 +97,19 @@ NUM_TO_LIST " to number list "
 {WHILE} {return WHILE;}
 {DO} {return DO;}
 {VARIABLE_NAME} {yylval.string = yytext; return VARIABLE_NAME;}
+{NEW} {return NEW;}
+{INTLIST} {return INTLIST;}
+{STLIST} {return STLIST;}
+{PRINT_INT} {return PRINT_INT;}
+{PRINT_STRING} {return PRINT_STRING;}
+{PRINT_NUM_LIST} {return PRINT_NUM_LIST;}
+{PRINT_TEXT_LIST} {return PRINT_TEXT_LIST;}
+{STARTS_WITH} {return STARTS_WITH;}
+{ADD} {return ADD;}
+{DELETE} {return DELETE;}
+{NUMBER_FROM_LIST} {return NUMBER_FROM_LIST;}
+{TEXT_FROM_LIST} {return TEXT_FROM_LIST;}
+
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

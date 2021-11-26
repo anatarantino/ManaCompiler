@@ -1,12 +1,12 @@
 #ifndef MANACOMPILER_NUMBERLIST_H
 #define MANACOMPILER_NUMBERLIST_H
 
-typedef struct number_node{
+ struct number_node{
     int number;
     struct number_node * next;
-}number_node;
+};
 
-typedef number_node * number_list;
+typedef struct number_node * number_list;
 
 number_list * create_number_list(int number);
 

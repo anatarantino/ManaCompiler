@@ -5,11 +5,11 @@
 
 list * create_list(char * data){
     node * new_node;
-    list * new_list = malloc(sizeof (list));
-    *new_list = malloc(sizeof (node));
+    list * new_list = (list *)malloc(sizeof (list));
+    *new_list = (struct node *)malloc(sizeof (struct node));
     new_node = *new_list;
     strcpy(new_node->data, data);
-    new_node->type = NULL;
+    new_node->type = "";
     new_node->next = NULL;
     return new_list;
 }
@@ -28,7 +28,7 @@ int add_to_list(char * data, char * type, list * list){
         return 1;
     }
 
-    new_node = malloc(sizeof (node));
+    new_node = (struct node *)malloc(sizeof (struct node));
     strcpy(new_node->data, data);
     strcpy(new_node->type,type);
 

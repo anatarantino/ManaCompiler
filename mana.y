@@ -99,7 +99,7 @@ char * tok;
 BEGIN: INIT MAIN FINISH;
 
 /* program */
-INIT: START {printf("#include <stdio.h>\n#include <stdlib.h>\n#include <strings.h>\n");printf("int main (void){");};
+INIT: START {printf("#include <stdio.h>\n#include <stdlib.h>\n#include <strings.h>\n#include \"list.h\"\n#include \"numberList.h\"\n");printf("int main (void){");};
 
 MAIN: {} | CONDITIONAL MAIN | INSTRUCTION MAIN;
 
@@ -373,7 +373,6 @@ int main(void){
 	variables = create_list("");
 	yyparse();
 	free(variables);
-
 }
 
 

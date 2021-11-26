@@ -5,8 +5,8 @@
 
 number_list * create_number_list(int number){
     number_node * new_node;
-    number_list * new_list = malloc(sizeof (number_list));
-    *new_list = malloc(sizeof (number_node));
+    number_list * new_list = (number_list *)malloc(sizeof (number_list));
+    *new_list = (number_node *)malloc(sizeof (number_node));
     new_node = *new_list;
     new_node->number = number;
     new_node->next = NULL;

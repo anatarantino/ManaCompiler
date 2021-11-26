@@ -1,69 +1,61 @@
-#include "list.h"
+#include "numberList.h"
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
-list * create_list(char * data){
-    node * new_node;
-    list * new_list = malloc(sizeof (list));
-    *new_list = malloc(sizeof (node));
+number_list * create_number_list(int data){
+    number_node * new_node;
+    number_list * new_list = malloc(sizeof (number_list));
+    *new_list = malloc(sizeof (number_node));
     new_node = *new_list;
-    strcpy(new_node->data, name);
-    type = NONE;
+    new_node->number = data;
     new_node->next = NULL;
     return new_list;
 }
 
-//returns 1 if added and 0 if not
-int add_to_list(char * data, int type, list * list){
-    node *new_node, *current, *prev = NULL;
-    if(list == NULL){
+int add_to_number_list(int data, number_list * number_list) {
+    number_node *new_node, *current, *prev = NULL;
+    if(number_list == NULL){
         fprintf(stderr,"Error adding to list: list doesn't exist.\n");
         return 0;
     }
-    current = *list;
+    current = *number_list;
     if(current->data == NULL){ //list is empty
-        strcpy(current->data, data);
-        current->type = type;
+        current->data = data;
         return 1;
     }
 
     new_node = malloc(sizeof (node));
-    strcpy(new_node->data, data);
-    new_node->type = type;
+    new_node->data = data;
 
     new_node->next = current;
-    *list = new_node;
+    *number_list = new_node;
     return 1;
 }
 
-//TODO: chequear que pasa cuando quiero remover el unico elemento que tiene una lista. Lo que hice fue ponerle que todo este en null pero no se si no habria que borrar la lista
-//returns 1 if removed and 0 if not
-int remove_from_list(char * data, list * list){
-
-    if (list == NULL){
+int remove_from_number_list(int data, number_list * number_list) {
+    if (number_list == NULL){
         fprintf(stderr, "Error removing from list: list does not exist.\n" );
         return 0;
     }
-    node * current = *list;
+    number_node * current = *number_list;
 
-    if(strcmp(current->data, data) == 0){
+    if(current->data == data){
         if(current->next == NULL){ //it's the only item
             current->data = NULL;
-            current->type = NULL;
             return 1;
         }else{
-            *list = current->next;
+            *number_list = current->next;
             free(current);
             return 1;
         }
     }
-    node * prev = current;
+    number_node * prev = current;
     current = current->next;
 
     //loop through list to find node
     while(current != NULL) {
-        if(strcmp(current->data, data) == 0){
+        if(current->data == data){
             if(current->next != NULL){
                 prev->next = current->next;
                 free(current);
@@ -80,31 +72,24 @@ int remove_from_list(char * data, list * list){
 
     fprintf(stderr, "Error removing item from list: item does not exist.\n");
     return 0;
-
 }
 
-int add_to_text_list(char * data,list * list){
-    add_to_list(data, TEXT, list);
-}
-
-
-void print_list(list * list){
-    node * current = *list;
+void print_number_list(number_list * number_list) {
+    number_node * current = *number_list;
     while(current != null){
         if(current->next != NULL){
-            printf("%s, ",current->data);
+            printf("%d, ",current->data);
         }else{ //it's the last item
-            printf("%s\n",current->data);
+            printf("%d\n",current->data);
         }
         current = current->next;
     }
 }
 
-int find(char * data, list * list, int type){
-    node * current = *list;
+int find_number(int data, number_list * number_list){
+    number_node * current = *number_list;
     while(current != NULL){
-        if(strcmp(current->data,data)==0){
-            *type = current->type;
+        if(current->data == data){
             return 1;
         }
         current = current->next;
@@ -112,16 +97,14 @@ int find(char * data, list * list, int type){
     return 0;
 }
 
-void free_list(list * list){
-    node * current = *list;
-    node * next;
+void free_number_list(number_list * number_list) {
+    number_node * current = *number_list;
+    number_node * next;
     while(current != NULL){
         next = current->next;
         free(current);
         current = next;
     }
-    free(list);
-
+    free(number_list);
 }
-
 

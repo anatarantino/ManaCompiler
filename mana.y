@@ -12,20 +12,25 @@ char aux[60];
 char * tok;
 %}
 
+%union{
+ char * string;
+ int number;
+}
+
 /* program */
-%token START;
+%token START
 %token END;
 %token DELIMITER;
 
 /* data types */
-%token TEXT; //TODO
-%token NUMBER; //TODO
+%token TEXT;
+%token NUMBER;
 
 %token INTLIST;
 %token STLIST;
 
-%token <string> STRING; //TODO fijarse como declarar variable
-%token <number> INTEGER; //TODO mismo que string, fijarse como declarar variable
+%token <string> STRING;
+%token <number> INTEGER;
 %token <string> VARIABLE_NAME;
 /* constants and delimiters */
 
@@ -57,6 +62,9 @@ char * tok;
 %token ELSE;
 %token WHILE;
 %token DO;
+%token END_IF;
+%token THEN;
+
 
 /* aux */
 %token PRINT_INT;
@@ -67,6 +75,10 @@ char * tok;
 %token ADD;
 %token DELETE;
 %token NEW;
+%token NUMBER_FROM_LIST;
+%token TEXT_FROM_LIST;
+%token TEXT_TO_LIST;
+%token NUM_TO_LIST;
 
 %type<string> NUM_LIST_VAR_NAME_OK;
 %type<string> TEXT_LIST_VAR_NAME_OK;
@@ -74,10 +86,8 @@ char * tok;
 %type<string> TYPE;
 %type<string> VAR_NAME;
 %type<string> NUM_LIST_VAR_NAME;
-%type<string> TEXT_LIST_VAR_NAME;
-%token<string> NUMBER_FROM_LIST;
-%token<string> TEXT_FROM_LIST;
-%token<string> LIST_VAR_NAME;
+%type<string> LIST_VAR_NAME;
+%type<string> VAR_NAME_OP;
 
 %start BEGIN;
 
@@ -118,9 +128,6 @@ OR_OP: OR {printf("||");};
 
 NOT_OP: NOT {printf("!");};
 
-/* assignment operators */
-ASSIG: ASSIGNMENT {printf("=");};
-
 /* conditionals */
 
 CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
@@ -130,6 +137,8 @@ WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP; //TODO COMPLETAR
 IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
 
 IF_OP: IF {printf("if(");};
+
+THEN_OP: THEN {printf("){");};
 
 ELSE_OP: ELSE {printf("}else{");};
 
@@ -155,7 +164,7 @@ FALSE_OP: FALSE {printf("0");};
 
 COMPARISON: EXP OPERATOR EXP;
 
-OPERATOR: EQ | NEQ | AND_OP | OR_OP;
+OPERATOR: EQ | NEQ | LT | GT;
 
 EXP: TERM | EXP PLUS_OP TERM | EXP MINUS_OP TERM;
 
@@ -242,7 +251,7 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			var[strlen($4)-1] = 0;
 			printf("add_to_text_list(%s,%s);",aux,var);
 		}
-		| ADD NUMBER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
 			aux[strlen($2)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
@@ -253,7 +262,7 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			var[strlen($4)-1] = 0;
 			printf("remove_from_list(%s,%s);",aux,var);
 		}
-		| DELETE NUMBER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
 			aux[strlen($2)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
@@ -348,5 +357,16 @@ TEXT_OP: STRING {printf($1);};
 
 PRINT_TEXT_END: VARIABLE_NAME {printf("\"%%s\",%s)",$1);}; | TEXT_OP {printf(")");};
 
+LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("list * %s", $$);};
+
+NUM_LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("number_list * %s", $$);};
+
+%%
+
+int main(void){
+	variables = create_list("");
+	yyparse();
+	free(variables);
+}
 
 

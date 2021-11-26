@@ -8,7 +8,7 @@ typedef struct number_node{
 
 typedef number_node * number_list;
 
-list * create_number_list(int data);
+number_list * create_number_list(int data);
 
 int add_to_number_list(int data, number_list * number_list );
 

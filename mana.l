@@ -1,5 +1,6 @@
 %{
-/* TODO declaraciones en C */
+    #include "y.tab.h"
+    #include <stdio.h>
 %}
 
 /* definitions */
@@ -45,8 +46,11 @@ ASSIGNMENT " = "
 /* conditionals */
 IF "if"
 ELSE "else"
+THEN "then"
 WHILE "while"
 DO "repeat:"
+END_IF "end if"
+
 
 /* aux */
 PRINT_INT "print number: "
@@ -59,9 +63,12 @@ DELETE "delete "
 NUMBER_FROM_LIST " to number list "
 TEXT_FROM_LIST " to text list "
 NEW "new "
+TEXT_TO_LIST " to text list "
+NUM_TO_LIST " to number list "
+
 %%
 
-/* rules */
+
 {START} {return START;}
 {END} {return END}
 {DELIMITER} {return DELIMITER}

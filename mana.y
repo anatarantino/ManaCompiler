@@ -21,78 +21,78 @@
 }
 
 /* program */
-%token START;
-%token END;
-%token DELIMITER;
+%token START
+%token END
+%token DELIMITER
 
 /* data types */
-%token TEXT;
-%token NUMBER;
+%token TEXT
+%token NUMBER
 
-%token INTLIST;
-%token STLIST;
+%token INTLIST
+%token STLIST
 
-%token <string> STRING;
-%token <number> INTEGER;
-%token <string> VARIABLE_NAME;
+%token <string> STRING
+%token <number> INTEGER
+%token <string> VARIABLE_NAME
 /* constants and delimiters */
 
 /* arithmetic operators */
-%token MINUS;
-%token PLUS;
-%token MULTIPLY;
-%token DIVIDE;
+%token MINUS
+%token PLUS
+%token MULTIPLY
+%token DIVIDE
 
 /* relational operators */
-%token LOWER_THAN;
-%token GREATER_THAN;
-%token IS_EQUAL;
-%token NOT_EQUAL;
+%token LOWER_THAN
+%token GREATER_THAN
+%token IS_EQUAL
+%token NOT_EQUAL
 
 /* logical operators */
-%token AND;
-%token OR;
-%token NOT;
+%token AND
+%token OR
+%token NOT
 
-%token TRUE;
-%token FALSE;
+%token TRUE
+%token FALSE
 
 /* assignment operators */
-%token ASSIGNMENT;
+%token ASSIGNMENT
 
 /* conditionals */
-%token IF;
-%token ELSE;
-%token WHILE;
-%token DO;
-%token END_IF;
-%token THEN;
+%token IF
+%token ELSE
+%token WHILE
+%token DO
+%token END_IF
+%token THEN
 
 
 /* aux */
-%token PRINT_INT;
-%token PRINT_STRING;
-%token PRINT_NUM_LIST;
-%token PRINT_TEXT_LIST;
-%token STARTS_WITH;
-%token ADD;
-%token DELETE;
-%token NEW;
-%token NUMBER_FROM_LIST;
-%token TEXT_FROM_LIST;
-%token TEXT_TO_LIST;
-%token NUM_TO_LIST;
+%token PRINT_INT
+%token PRINT_STRING
+%token PRINT_NUM_LIST
+%token PRINT_TEXT_LIST
+%token STARTS_WITH
+%token ADD
+%token DELETE
+%token NEW
+%token NUMBER_FROM_LIST
+%token TEXT_FROM_LIST
+%token TEXT_TO_LIST
+%token NUM_TO_LIST
 
-%type<string> TEXT_OP;
-%type<string> NUM_LIST_VAR_NAME_OK;
-%type<string> TEXT_LIST_VAR_NAME_OK;
-%type<string> DECLARATION;
-%type<string> TYPE;
-%type<string> VAR_NAME;
-%type<string> NUM_LIST_VAR_NAME;
-%type<string> LIST_VAR_NAME;
-%type<string> VAR_NAME_OP;
-%start BEGIN;
+%type<string> TEXT_OP
+%type<string> NUM_LIST_VAR_NAME_OK
+%type<string> TEXT_LIST_VAR_NAME_OK
+%type<string> DECLARATION
+%type<string> TYPE
+%type<string> VAR_NAME
+%type<string> NUM_LIST_VAR_NAME
+%type<string> LIST_VAR_NAME
+%type<string> VAR_NAME_OP
+%start BEGIN
 
 %%
 BEGIN: INIT MAIN FINISH;
@@ -119,7 +119,7 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
-					strcpy(type,"INTEGERLIST");
+					strcpy(type,"NUM_LIST");
 					add_to_list($3,type,variables);
 				}else{
 					//TODO error
@@ -132,7 +132,7 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
-					strcpy(type,"INTEGERLIST");
+					strcpy(type,"NUM_LIST");
 					add_to_list($3,type,variables);
 				}else{
 					//TODO error
@@ -145,7 +145,7 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH INTEGER{
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
-					strcpy(type,"INTEGERLIST");
+					strcpy(type,"NUM_LIST");
 					add_to_list($3,type,variables);
 				}else{
 					//TODO error
@@ -158,7 +158,7 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH STRING{
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
-					strcpy(type,"STRINGLIST");
+					strcpy(type,"TEXT_LIST");
 					add_to_list($3,type,variables);
 				}else{
 					//TODO error
@@ -302,7 +302,7 @@ NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
 		//error. variable not in variables list
 		//TODO error
 	}
-	if(strcmp(type,"NUMBER_LIST")!=0){
+	if(strcmp(type,"NUM_LIST")!=0){
 		//error
 	}
 };

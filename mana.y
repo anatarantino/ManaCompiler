@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include "list.h"
+#include "numberList.h"
 #define MAX_LENGTH 15
 
-char type[7]; aux vector to save datatype to list node
+int yylex();
+void yyerror(char *s);
+char * type; //aux pointer to save datatype to list node
 list * variables;
 char var[60];
 char aux[60];
@@ -80,6 +83,7 @@ char * tok;
 %token TEXT_TO_LIST;
 %token NUM_TO_LIST;
 
+%type<string> TEXT_OP;
 %type<string> NUM_LIST_VAR_NAME_OK;
 %type<string> TEXT_LIST_VAR_NAME_OK;
 %type<string> DECLARATION;
@@ -129,10 +133,9 @@ OR_OP: OR {printf("||");};
 NOT_OP: NOT {printf("!");};
 
 /* conditionals */
-
 CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
 
-WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP; //TODO COMPLETAR
+WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP;
 
 IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
 
@@ -176,7 +179,7 @@ NUMBER_OP: INTEGER {printf("%d", $1);};
 
 VAR_NAME_OK: VARIABLE_NAME {
 	int found = 0;
-	if(find(variables,$1,type)){
+	if(find($1,variables,type)){
 		found = 1;
 	}
 	if(!found){
@@ -189,35 +192,35 @@ VAR_NAME_OK: VARIABLE_NAME {
 
 NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
 	int found = 0;
-	if(find(variables,$1,type)){
+	if(find($1,variables,type)){
 		found = 1;
 	}
 	if(!found){
 		//error. variable not in variables list
 		//TODO error
 	}
-	if(strcmp(type, "INTEGERLIST")!=0){
+	if(strcmp(type,"NUMBER_LIST")!=0){
 		//error
 	}
 };
 
 TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
 	int found = 0;
-	if(find(variables,$1,type)){
+	if(find($1,variables,type)){
 		found = 1;
 	}
 	if(!found){
 		//error. variable not in variables list
 		//TODO error
 	}
-	if(strcmp(type, "STRINGLIST")!=0){
+	if(strcmp(type,"TEXT_LIST")!=0){
 		//error
 	}
 };
 
 VAR_NAME_OP: VARIABLE_NAME {
 	int found = 0;
-	if(find(variables,$1,type)){
+	if(find($1,variables,type)){
 		found = 1;
 	}
 	if(!found){
@@ -252,8 +255,8 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("add_to_text_list(%s,%s);",aux,var);
 		}
 		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux, $2);
-			aux[strlen($2)-1]=0;
+			strcpy(aux, $4);
+			aux[strlen($4)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
 		}
 		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
@@ -263,16 +266,15 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("remove_from_list(%s,%s);",aux,var);
 		}
 		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux, $2);
-			aux[strlen($2)-1]=0;
+			strcpy(aux, $4);
+			aux[strlen($4)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
 
 DECLARATION: 	NEW TYPE VAR_NAME{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find(variables,$3,type)){
-					strcpy(aux,$2);
-					add_to_list($3,aux,symbol_table);
+				if(!find($3,variables,type)){
+					add_to_list($3,$2,variables);
 				}else{
 					//TODO error
 				}
@@ -283,52 +285,52 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 		}
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find(variables,$3,type)){
+				if(!find($3,variables,type)){
 					strcpy(type,"INTEGERLIST");
-					add_to_list($3,type,symbol_table);
+					add_to_list($3,type,variables);
 				}else{
 					//TODO error
 				}
-				prinft(" = create_list(%s)",$5);
+				printf(" = create_list(%s)",$5);
 			}else{
 				//TODO error
 			}
 		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find(variables,$3,type)){
+				if(!find($3,variables,type)){
 					strcpy(type,"INTEGERLIST");
-					add_to_list($3,type,symbol_table);
+					add_to_list($3,type,variables);
 				}else{
 					//TODO error
 				}
-				prinft(" = create_list(%s)",$5);
+				printf(" = create_list(%s)",$5);
 			}else{
 				//TODO error
 			}
 		}
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH INTEGER{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find(variables,$3,type)){
+				if(!find($3,variables,type)){
 					strcpy(type,"INTEGERLIST");
-					add_to_list($3,type,symbol_table);
+					add_to_list($3,type,variables);
 				}else{
 					//TODO error
 				}
-				prinft(" = create_list(%s)",$5);
+				printf(" = create_number_list(%d)",$5);
 			}else{
 				//TODO error
 			}
 		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH STRING{
 			if(strlen($3) < MAX_LENGTH){
-				if(!find(variables,$3,type)){
+				if(!find($3,variables,type)){
 					strcpy(type,"STRINGLIST");
-					add_to_list($3,type,symbol_table);
+					add_to_list($3,type,variables);
 				}else{
 					//TODO error
 				}
-				prinft(" = create_list(%s)",$5);
+				printf(" = create_list(%s)",$5);
 			}else{
 				//TODO error
 			}
@@ -345,7 +347,7 @@ NUM_ASSIGN: ASSIGN_TEXT EXP;
 
 PRINT_NUM: PRINT_INT_OP PRINT_NUM_END;
 
-PRINT_INT_OP: PRINT_INT {printf(\"");};
+PRINT_INT_OP: PRINT_INT {printf("printf(\"");};
 
 PRINT_NUM_END: VARIABLE_NAME {printf("\"%%d\",%s)",$1);};
 
@@ -353,7 +355,7 @@ PRINT_TEXT: PRINT_TEXT_OP PRINT_TEXT_END;
 
 PRINT_TEXT_OP: PRINT_STRING {printf("printf(");};
 
-TEXT_OP: STRING {printf($1);};
+TEXT_OP: STRING {printf("%s",$1);};
 
 PRINT_TEXT_END: VARIABLE_NAME {printf("\"%%s\",%s)",$1);}; | TEXT_OP {printf(")");};
 
@@ -362,11 +364,16 @@ LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("list * %s", $$);};
 NUM_LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("number_list * %s", $$);};
 
 %%
+int yywrap()
+{
+        return 1;
+}
 
 int main(void){
 	variables = create_list("");
 	yyparse();
 	free(variables);
+
 }
 
 

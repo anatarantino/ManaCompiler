@@ -8,14 +8,14 @@ list * create_list(char * data){
     list * new_list = malloc(sizeof (list));
     *new_list = malloc(sizeof (node));
     new_node = *new_list;
-    strcpy(new_node->data, name);
-    type = NONE;
+    strcpy(new_node->data, data);
+    new_node->type = NULL;
     new_node->next = NULL;
     return new_list;
 }
 
 //returns 1 if added and 0 if not
-int add_to_list(char * data, int type, list * list){
+int add_to_list(char * data, char * type, list * list){
     node *new_node, *current, *prev = NULL;
     if(list == NULL){
         fprintf(stderr,"Error adding to list: list doesn't exist.\n");
@@ -30,7 +30,7 @@ int add_to_list(char * data, int type, list * list){
 
     new_node = malloc(sizeof (node));
     strcpy(new_node->data, data);
-    new_node->type = type;
+    strcpy(new_node->type,type);
 
     new_node->next = current;
     *list = new_node;
@@ -84,13 +84,13 @@ int remove_from_list(char * data, list * list){
 }
 
 int add_to_text_list(char * data,list * list){
-    add_to_list(data, TEXT, list);
+    return add_to_list(data, "TEXT_LIST", list);
 }
 
 
 void print_list(list * list){
     node * current = *list;
-    while(current != null){
+    while(current != NULL){
         if(current->next != NULL){
             printf("%s, ",current->data);
         }else{ //it's the last item
@@ -100,11 +100,11 @@ void print_list(list * list){
     }
 }
 
-int find(char * data, list * list, int type){
+int find(char * data, list * list, char * type){
     node * current = *list;
     while(current != NULL){
         if(strcmp(current->data,data)==0){
-            *type = current->type;
+            strcpy(type,current->type);
             return 1;
         }
         current = current->next;

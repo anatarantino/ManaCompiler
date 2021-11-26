@@ -1,6 +1,8 @@
 %{
     #include "y.tab.h"
-    #include <stdio.h>
+    #include <stdlib.h>
+    #include <strings.h>
+
 %}
 
 /* definitions */
@@ -70,12 +72,12 @@ NUM_TO_LIST " to number list "
 
 
 {START} {return START;}
-{END} {return END}
-{DELIMITER} {return DELIMITER}
+{END} {return END;}
+{DELIMITER} {return DELIMITER;}
 {TEXT} {return TEXT;}
-{STRING} {return yylval.string = yytext; return STRING;}
+{STRING} {yylval.string = yytext; return STRING;}
 {NUMBER} {return NUMBER;}
-{INTEGER} {return yylval.number=atoi(yytext); return INTEGER;}
+{INTEGER} {yylval.number=atoi(yytext); return INTEGER;}
 {MINUS} {return MINUS;}
 {PLUS} {return PLUS;}
 {MULTIPLY} {return MULTIPLY;}
@@ -98,7 +100,7 @@ NUM_TO_LIST " to number list "
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces
-. ECHO
+. ECHO;
 %%
 
 int yyerror(const char *msg){

@@ -8,15 +8,15 @@ typedef struct number_node{
 
 typedef number_node * number_list;
 
-number_list * create_number_list(int data);
+number_list * create_number_list(int number);
 
-int add_to_number_list(int data, number_list * number_list );
+int add_to_number_list(int number, number_list * number_list );
 
-int remove_from_number_list(int data, number_list * number_list) ;
+int remove_from_number_list(int number, number_list * number_list) ;
 
 void print_number_list(number_list * number_list) ;
 
-int find_number(int data, number_list * number_list);
+int find_number(int number, number_list * number_list);
 
 void free_number_list(number_list * number_list) ;
 

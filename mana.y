@@ -1,18 +1,18 @@
 %{
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "list.h"
-#include "numberList.h"
-#define MAX_LENGTH 15
+	#include <stdio.h>
+	#include <string.h>
+	#include <stdlib.h>
+	#include "list.h"
+	#include "numberList.h"
+	#define MAX_LENGTH 15
 
-int yylex();
-void yyerror(char *s);
-char * type; //aux pointer to save datatype to list node
-list * variables;
-char var[60];
-char aux[60];
-char * tok;
+	int yylex();
+	void yyerror(const char *s);
+	char type[10]; //aux pointer to save datatype to list node
+	list * variables;
+	char var[60];
+	char aux[60];
+	char * tok;
 %}
 
 %union{
@@ -21,7 +21,7 @@ char * tok;
 }
 
 /* program */
-%token START
+%token START;
 %token END;
 %token DELIMITER;
 
@@ -92,7 +92,6 @@ char * tok;
 %type<string> NUM_LIST_VAR_NAME;
 %type<string> LIST_VAR_NAME;
 %type<string> VAR_NAME_OP;
-
 %start BEGIN;
 
 %%
@@ -101,175 +100,9 @@ BEGIN: INIT MAIN FINISH;
 /* program */
 INIT: START {printf("#include <stdio.h>\n#include <stdlib.h>\n#include <strings.h>\n#include \"list.h\"\n#include \"numberList.h\"\n");printf("int main (void){");};
 
-MAIN: {} | CONDITIONAL MAIN | INSTRUCTION MAIN;
+MAIN: CONDITIONAL MAIN | INSTRUCTION MAIN | {};
 
 FINISH: END {printf("}");};
-
-DELIMITER_OP: DELIMITER {printf(";");};
-
-/* arithmetic operators */
-MINUS_OP: MINUS {printf("-");};
-
-PLUS_OP: PLUS {printf("+");};
-
-MULT_OP: MULTIPLY {printf("*");};
-
-DIV_OP: DIVIDE {printf("/");};
-
-/* relational operators */
-LT: LOWER_THAN {printf("<");};
-
-GT: GREATER_THAN {printf(">");};
-
-EQ: IS_EQUAL {printf("==");};
-
-NEQ: NOT_EQUAL {printf("!=");};
-
-/* logical operators */
-AND_OP: AND {printf("&&");};
-
-OR_OP: OR {printf("||");};
-
-NOT_OP: NOT {printf("!");};
-
-/* conditionals */
-CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
-
-WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP;
-
-IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
-
-IF_OP: IF {printf("if(");};
-
-THEN_OP: THEN {printf("){");};
-
-ELSE_OP: ELSE {printf("}else{");};
-
-WHILE_OP: WHILE {printf("}while(");};
-
-DO_OP: DO {printf("do{");};
-
-END_WHILE_OP: DELIMITER {printf(");");};
-
-/* aux */
-
-BOOL_EXP: BOOL_EXP | NOT_OP BOOL_EXP | BOOL_EXP OR_OP BOOL_TERM;
-
-BOOL_TERM: BOOL_TERM AND_OP BOOL_STATE | BOOL_STATE;
-
-BOOL_STATE: BOOLEAN | BOOL_EXP;
-
-BOOLEAN: TRUE_OP | FALSE_OP | COMPARISON;
-
-TRUE_OP: TRUE {printf("1");};
-
-FALSE_OP: FALSE {printf("0");};
-
-COMPARISON: EXP OPERATOR EXP;
-
-OPERATOR: EQ | NEQ | LT | GT;
-
-EXP: TERM | EXP PLUS_OP TERM | EXP MINUS_OP TERM;
-
-TERM: TERM_STATE | TERM DIV_OP TERM_STATE | TERM MULT_OP TERM_STATE;
-
-TERM_STATE: NUMBER_OP | VAR_NAME_OK
-
-NUMBER_OP: INTEGER {printf("%d", $1);};
-
-VAR_NAME_OK: VARIABLE_NAME {
-	int found = 0;
-	if(find($1,variables,type)){
-		found = 1;
-	}
-	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}else{
-		printf("%s",$1);
-	}
-};
-
-NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
-	int found = 0;
-	if(find($1,variables,type)){
-		found = 1;
-	}
-	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}
-	if(strcmp(type,"NUMBER_LIST")!=0){
-		//error
-	}
-};
-
-TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
-	int found = 0;
-	if(find($1,variables,type)){
-		found = 1;
-	}
-	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}
-	if(strcmp(type,"TEXT_LIST")!=0){
-		//error
-	}
-};
-
-VAR_NAME_OP: VARIABLE_NAME {
-	int found = 0;
-	if(find($1,variables,type)){
-		found = 1;
-	}
-	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}
-};
-
-VAR_NAME: VARIABLE_NAME {$$=$1, printf("%s",$$);};
-
-INSTRUCTION: 	DECLARATION DELIMITER_OP
-		| DECLARATION STRING_ASSIGN DELIMITER_OP
-		| DECLARATION NUM_ASSIGN DELIMITER_OP
-		| VAR_NAME_OK STRING_ASSIGN DELIMITER_OP
-		| VAR_NAME_OK NUM_ASSIGN DELIMITER_OP
-		| PRINT_TEXT DELIMITER_OP
-		| PRINT_NUM DELIMITER_OP
-		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(var,$2);
-			var[strlen($2)-1] = 0;
-			printf("print_list(%s);",var);
-		}
-		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(var,$2);
-			var[strlen($2)-1] = 0;
-			printf("print_number_list(%s);",var);
-		}
-		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux,$2);
-			strcpy(var,$4);
-			var[strlen($4)-1] = 0;
-			printf("add_to_text_list(%s,%s);",aux,var);
-		}
-		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux, $4);
-			aux[strlen($4)-1]=0;
-			printf("add_to_number_list(%d,%s);",$2, aux);
-		}
-		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux, $2);
-			strcpy(var, $4);
-			var[strlen($4)-1] = 0;
-			printf("remove_from_list(%s,%s);",aux,var);
-		}
-		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			strcpy(aux, $4);
-			aux[strlen($4)-1]=0;
-			printf("remove_from_number_list(%d,%s);",$2, aux);
-		}
 
 DECLARATION: 	NEW TYPE VAR_NAME{
 			if(strlen($3) < MAX_LENGTH){
@@ -336,8 +169,172 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 			}
 		};
 
+INSTRUCTION: 	DECLARATION DELIMITER_OP
+		| DECLARATION STRING_ASSIGN DELIMITER_OP
+		| DECLARATION NUM_ASSIGN DELIMITER_OP
+		| VAR_NAME_OK STRING_ASSIGN DELIMITER_OP
+		| VAR_NAME_OK NUM_ASSIGN DELIMITER_OP
+		| PRINT_TEXT DELIMITER_OP
+		| PRINT_NUM DELIMITER_OP
+		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(var,$2);
+			var[strlen($2)-1] = 0;
+			printf("print_list(%s);",var);
+		}
+		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(var,$2);
+			var[strlen($2)-1] = 0;
+			printf("print_number_list(%s);",var);
+		}
+		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux,$2);
+			strcpy(var,$4);
+			var[strlen($4)-1] = 0;
+			printf("add_to_text_list(%s,%s);",aux,var);
+		}
+		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $4);
+			aux[strlen($4)-1]=0;
+			printf("add_to_number_list(%d,%s);",$2, aux);
+		}
+		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			strcpy(var, $4);
+			var[strlen($4)-1] = 0;
+			printf("remove_from_list(%s,%s);",aux,var);
+		}
+		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $4);
+			aux[strlen($4)-1]=0;
+			printf("remove_from_number_list(%d,%s);",$2, aux);
+		}
 
-TYPE: TEXT {$$="TEXT"; printf("char *");} | NUMBER {$$="NUMBER"; printf("int ");};
+
+DELIMITER_OP: DELIMITER {printf(";");};
+/* conditionals */
+CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
+
+WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP;
+
+IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
+
+IF_OP: IF {printf("if(");};
+
+THEN_OP: THEN {printf("){");};
+
+ELSE_OP: ELSE {printf("}else{");};
+
+WHILE_OP: WHILE {printf("}while(");};
+
+DO_OP: DO {printf("do{");};
+
+END_WHILE_OP: DELIMITER {printf(");");};
+
+/* aux */
+BOOL_EXP: BOOL_EXP OR_OP BOOL_TERM | BOOL_TERM | NOT_OP BOOL_EXP;
+
+BOOL_TERM: BOOL_TERM AND_OP BOOL_STATE | BOOL_STATE;
+
+BOOL_STATE: BOOLEAN | BOOL_EXP;
+
+BOOLEAN: TRUE_OP | FALSE_OP | COMPARISON;
+
+TRUE_OP: TRUE {printf("1");};
+
+FALSE_OP: FALSE {printf("0");};
+
+COMPARISON: EXP OPERATOR EXP;
+
+OPERATOR: EQ | NEQ | LT | GT;
+
+EXP: TERM | EXP PLUS_OP TERM | EXP MINUS_OP TERM;
+
+TERM: TERM_STATE | TERM DIV_OP TERM_STATE | TERM MULT_OP TERM_STATE;
+
+TERM_STATE: NUMBER_OP | VAR_NAME_OK
+
+NUMBER_OP: INTEGER {printf("%d", $1);};
+
+/* arithmetic operators */
+MINUS_OP: MINUS {printf("-");};
+
+PLUS_OP: PLUS {printf("+");};
+
+MULT_OP: MULTIPLY {printf("*");};
+
+DIV_OP: DIVIDE {printf("/");};
+
+/* relational operators */
+LT: LOWER_THAN {printf("<");};
+
+GT: GREATER_THAN {printf(">");};
+
+EQ: IS_EQUAL {printf("==");};
+
+NEQ: NOT_EQUAL {printf("!=");};
+
+/* logical operators */
+AND_OP: AND {printf("&&");};
+
+OR_OP: OR {printf("||");};
+
+NOT_OP: NOT {printf("!");};
+
+VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find($1,variables,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}else{
+		printf("%s",$1);
+	}
+};
+
+NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find($1,variables,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
+	if(strcmp(type,"NUMBER_LIST")!=0){
+		//error
+	}
+};
+
+TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
+	int found = 0;
+	if(find($1,variables,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
+	if(strcmp(type,"TEXT_LIST")!=0){
+		//error
+	}
+};
+
+VAR_NAME_OP: VARIABLE_NAME {
+	int found = 0;
+	if(find($1,variables,type)){
+		found = 1;
+	}
+	if(!found){
+		//error. variable not in variables list
+		//TODO error
+	}
+};
+
+VAR_NAME: VARIABLE_NAME {$$ = $1, printf("%s",$$);};
+
+TYPE: TEXT {$$ = "TEXT"; printf("char *");} | NUMBER {$$ = "NUMBER"; printf("int ");};
 
 STRING_ASSIGN: ASSIGN_TEXT TEXT_OP;
 
@@ -364,6 +361,7 @@ LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("list * %s", $$);};
 NUM_LIST_VAR_NAME: VARIABLE_NAME {$$ = $1, printf("number_list * %s", $$);};
 
 %%
+
 int yywrap()
 {
         return 1;

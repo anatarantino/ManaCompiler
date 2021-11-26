@@ -284,7 +284,7 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 			}else{
 				//TODO error
 			}
-		};
+		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
 			if(strlen($3) < MAX_LENGTH){
 				if(!find(variables,$3,type)){
@@ -298,6 +298,32 @@ DECLARATION: 	NEW TYPE VAR_NAME{
 				//TODO error
 			}
 		}
+		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH INTEGER{
+			if(strlen($3) < MAX_LENGTH){
+				if(!find(variables,$3,type)){
+					strcpy(type,"INTEGERLIST");
+					add_to_list($3,type,symbol_table);
+				}else{
+					//TODO error
+				}
+				prinft(" = create_list(%s)",$5);
+			}else{
+				//TODO error
+			}
+		}
+		| NEW STLIST LIST_VAR_NAME STARTS_WITH STRING{
+			if(strlen($3) < MAX_LENGTH){
+				if(!find(variables,$3,type)){
+					strcpy(type,"STRINGLIST");
+					add_to_list($3,type,symbol_table);
+				}else{
+					//TODO error
+				}
+				prinft(" = create_list(%s)",$5);
+			}else{
+				//TODO error
+			}
+		};
 
 
 TYPE: TEXT {$$="TEXT"; printf("char *");} | NUMBER {$$="NUMBER"; printf("int ");};

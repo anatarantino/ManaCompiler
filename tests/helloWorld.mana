@@ -1,32 +1,5 @@
 start
-    new text a = "hola anita".
-    new number b = 14.
-    new number c.
-    new text d.
-
-    new number list numeros starts with 5.
-    new text list texto starts with "jiji".
-    add 6 to number list numeros.
-    add 8 to number list numeros.
-    add "hola" to text list texto.
-    delete "hola" from text list texto.
-    add d to text list texto.
-    delete d from text list texto.
-    add b to number list numeros.
-    delete b from number list numeros.
-    print text: a.
-    print number: b.
-    print text: "holis".
-    print text list: texto.
-    print number list: numeros.
-    new number aux = 3.
-    repeat:
-    print number: aux.
-    aux = aux - 1.
-    while aux < 6.
-
-    if aux < 4 then
-    print number: aux.
-    end if
-
+    new text list txt starts with "abc".
+    add "chau" to text list txt.
+    print text list: txt.
 end

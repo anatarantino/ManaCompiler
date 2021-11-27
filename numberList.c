@@ -38,9 +38,8 @@ int remove_from_number_list(int number, number_list * number_list) {
 
     if(current->number == number){
         if(current->next == NULL){ //it's the only item
-            //TODO check this case
-//            current->number = NULL;
-            return 1;
+            fprintf(stderr, "Error deleting number. This list can't be empty.\n");
+            return 0;
         }else{
             *number_list = current->next;
             free(current);

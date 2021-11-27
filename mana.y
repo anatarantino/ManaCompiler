@@ -120,29 +120,39 @@ DECLARATION: NEW TYPE VAR_NAME{
 			$$=$3;
 		}
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
+			strcpy(aux, $3);
+			$3 = strtok(aux," ");
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
 					strcpy(type,"NUM_LIST");
-					add_to_list($3,type,variables);
+					add_to_list(aux,type,variables);
 				}else{
-					//TODO error
+					yyerror("variable re-defined");
+					fprintf(stderr, "Variable name '%s' is already defined.\n",$3);
+					YYABORT;
 				}
-				printf(" = create_list(%s)",$5);
+				printf(" = create_number_list(%s)",$5);
 			}else{
-				//TODO error
+				fprintf(stderr, "Variable name '%s' is too long.\n",$3);
+				yyerror("Variable name error");
 			}
 		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH VAR_NAME_OP{
+			strcpy(aux, $3);
+			$3 = strtok(aux," ");
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
-					strcpy(type,"NUM_LIST");
+					strcpy(type,"TEXT_LIST");
 					add_to_list($3,type,variables);
 				}else{
-					//TODO error
+					yyerror("variable re-defined");
+					fprintf(stderr, "Variable name '%s' is already defined.\n",$3);
+					YYABORT;
 				}
 				printf(" = create_list(%s)",$5);
 			}else{
-				//TODO error
+				fprintf(stderr, "Variable name '%s' is too long.\n",$3);
+				yyerror("Variable name error");
 			}
 		}
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH INTEGER{
@@ -153,11 +163,14 @@ DECLARATION: NEW TYPE VAR_NAME{
 					strcpy(type,"NUM_LIST");
 					add_to_list($3,type,variables);
 				}else{
-					//TODO error
+					yyerror("variable re-defined");
+					fprintf(stderr, "Variable name '%s' is already defined.\n",$3);
+					YYABORT;
 				}
 				printf(" = create_number_list(%d)",$5);
 			}else{
-				//TODO error
+				fprintf(stderr, "Variable name '%s' is too long.\n",$3);
+				yyerror("Variable name error");
 			}
 		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH STRING{
@@ -168,11 +181,14 @@ DECLARATION: NEW TYPE VAR_NAME{
 					strcpy(type,"TEXT_LIST");
 					add_to_list($3,type,variables);
 				}else{
-					//TODO error
+					yyerror("variable re-defined");
+					fprintf(stderr, "Variable name '%s' is already defined.\n",$3);
+					YYABORT;
 				}
 				printf(" = create_list(%s)",$5);
 			}else{
-				//TODO error
+				fprintf(stderr, "Variable name '%s' is too long.\n",$3);
+				yyerror("Variable name error");
 			}
 		}
 
@@ -184,62 +200,62 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| VAR_NAME_OK NUM_ASSIGN DELIMITER_OP
 		| PRINT_TEXT DELIMITER_OP
 		| PRINT_NUM DELIMITER_OP
-		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(var,$2);
 			var[strlen($2)-1] = 0;
 			printf("print_list(%s);",var);
 		}
-		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| PRINT_NUM_LIST NUM_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(var,$2);
 			var[strlen($2)-1] = 0;
 			printf("print_number_list(%s);",var);
 		}
-		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux,$2);
 			tok = strtok(aux, " ");
 			strcpy(var,$4);
 			var[strlen($4)-1] = 0;
 			printf("add_to_text_list(%s,%s);",tok,var);
 		}
-		| ADD VAR_NAME_OP TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| ADD VAR_NAME_OP TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux,$2);
 			tok = strtok(aux, " ");
 			strcpy(var,$4);
 			var[strlen($4)-1] = 0;
 			printf("add_to_text_list(%s,%s);",tok,var);
 		}
-		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux, $4);
 			aux[strlen($4)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
 		}
-		| ADD VAR_NAME_OP NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| ADD VAR_NAME_OP NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux,$2);
 			tok = strtok(aux, " ");
 			strcpy(var, $4);
 			var[strlen($4)-1]=0;
 			printf("add_to_number_list(%s,%s);",tok, var);
 		}
-		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux, $2);
 			tok = strtok(aux, " ");
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
 			printf("remove_from_list(%s,%s);",aux,var);
 		}
-		| DELETE VAR_NAME_OP TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE VAR_NAME_OP TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux, $2);
 			tok = strtok(aux, " ");
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
 			printf("remove_from_list(%s,%s);",aux,var);
 		}
-		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE INTEGER NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux, $4);
 			aux[strlen($4)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
-		| DELETE VAR_NAME_OP NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+		| DELETE VAR_NAME_OP NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER {
 			strcpy(aux, $2);
 			tok = strtok(aux, " ");
 			strcpy(var, $4);
@@ -326,8 +342,9 @@ VAR_NAME_OK: VARIABLE_NAME {
 		found = 1;
 	}
 	if(!found){
-		//error. variable not in variables list
-		//TODO error
+		yyerror("undefined variable");
+		fprintf(stderr, "Variable '%s' does not exist.\n",$1);
+		YYABORT;
 	}else{
 		printf("%s",$1);
 	}
@@ -372,8 +389,9 @@ VAR_NAME_OP: VARIABLE_NAME {
 		found = 1;
 	}
 	if(!found){
-		//error. variable not in variables list
-		//TODO error
+		yyerror("undefined variable");
+		fprintf(stderr, "Variable '%s' does not exist.\n",$1);
+		YYABORT;
 	}
 };
 

@@ -1,7 +1,7 @@
 .PHONY: clean
 
 all:
-	yacc -d -v mana.y
+	yacc -d -v -Wcounterexamples mana.y
 	lex mana.l
 	gcc -o mana.out lex.yy.c y.tab.c list.c numberList.c -fsanitize=address -ly
 	@echo "Compilation done."

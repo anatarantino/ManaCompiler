@@ -17,12 +17,12 @@ list * create_list(char * data){
 //returns 1 if added and 0 if not
 int add_to_list(char * data, char * type, list * list){
     struct node *new_node, *current, *prev = NULL;
-    if(list == NULL){
+    if(list == NULL || *list == NULL){
         fprintf(stderr,"Error adding to list: list doesn't exist.\n");
         return 0;
     }
     current = *list;
-    if(strcmp(current->data,"") == 0){ //list is empty
+    if(strcmp(current->data,"")==0){ //list is empty
         strcpy(current->data, data);
         strcpy(current->type,type);
         return 1;
@@ -36,7 +36,10 @@ int add_to_list(char * data, char * type, list * list){
     return 1;
 }
 
-//TODO: chequear que pasa cuando quiero remover el unico elemento que tiene una lista. Lo que hice fue ponerle que todo sea el string vacio pero no se si no habria que borrar la lista
+int add_to_text_list(char * data,list * list){
+    return add_to_list(data, "TEXT_LIST", list);
+}
+
 //returns 1 if removed and 0 if not
 int remove_from_list(char * data, list * list){
 
@@ -80,10 +83,6 @@ int remove_from_list(char * data, list * list){
     fprintf(stderr, "Error removing item from list: item does not exist.\n");
     return 0;
 
-}
-
-int add_to_text_list(char * data,list * list){
-    return add_to_list(data, "TEXT_LIST", list);
 }
 
 

@@ -195,8 +195,13 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("print_number_list(%s);",var);
 		}
 		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
-
-			fprintf(stderr,"por agregar algo a la text list\n");
+			strcpy(aux,$2);
+			tok = strtok(aux, " ");
+			strcpy(var,$4);
+			var[strlen($4)-1] = 0;
+			printf("add_to_text_list(%s,%s);",tok,var);
+		}
+		| ADD VAR_NAME_OP TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux,$2);
 			tok = strtok(aux, " ");
 			strcpy(var,$4);
@@ -204,13 +209,27 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("add_to_text_list(%s,%s);",tok,var);
 		}
 		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
-			fprintf(stderr,"por agregar algo a la number list\n");
 			strcpy(aux, $4);
 			aux[strlen($4)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
 		}
+		| ADD VAR_NAME_OP NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux,$2);
+			tok = strtok(aux, " ");
+			strcpy(var, $4);
+			var[strlen($4)-1]=0;
+			printf("add_to_number_list(%s,%s);",tok, var);
+		}
 		| DELETE STRING TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
 			strcpy(aux, $2);
+			tok = strtok(aux, " ");
+			strcpy(var, $4);
+			var[strlen($4)-1] = 0;
+			printf("remove_from_list(%s,%s);",aux,var);
+		}
+		| DELETE VAR_NAME_OP TEXT_FROM_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			tok = strtok(aux, " ");
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
 			printf("remove_from_list(%s,%s);",aux,var);
@@ -220,6 +239,13 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			aux[strlen($4)-1]=0;
 			printf("remove_from_number_list(%d,%s);",$2, aux);
 		}
+		| DELETE VAR_NAME_OP NUMBER_FROM_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			strcpy(aux, $2);
+			tok = strtok(aux, " ");
+			strcpy(var, $4);
+			var[strlen($4)-1] = 0;
+			printf("remove_from_number_list(%s,%s);",tok, var);
+		}
 
 
 DELIMITER_OP: DELIMITER {printf(";");};
@@ -228,13 +254,15 @@ CONDITIONAL: WHILE_CONTROL | IF_CONTROL;
 
 WHILE_CONTROL: DO_OP MAIN WHILE_OP BOOL_EXP END_WHILE_OP;
 
-IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF;
+IF_CONTROL: IF_OP BOOL_EXP THEN_OP MAIN END_IF_OP | IF_OP BOOL_EXP THEN_OP MAIN ELSE_OP MAIN END_IF_OP;
 
 IF_OP: IF {printf("if(");};
 
 THEN_OP: THEN {printf("){");};
 
 ELSE_OP: ELSE {printf("}else{");};
+
+END_IF_OP: END_IF {printf("}");};
 
 WHILE_OP: WHILE {printf("}while(");};
 
@@ -261,9 +289,9 @@ OPERATOR: EQ | NEQ | LT | GT;
 
 EXP: TERM | EXP PLUS_OP TERM | EXP MINUS_OP TERM;
 
-TERM: TERM_STATE | TERM DIV_OP TERM_STATE | TERM MULT_OP TERM_STATE;
+TERM: TERM_STATE | TERM DIV_OP TERM_STATE | TERM MULT_OP TERM_STATE | TERM TERM_STATE;
 
-TERM_STATE: NUMBER_OP | VAR_NAME_OK
+TERM_STATE: NUMBER_OP | VAR_NAME_OK;
 
 NUMBER_OP: INTEGER {printf("%d", $1);};
 
@@ -322,7 +350,6 @@ NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
 };
 
 TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
-	fprintf(stderr,"en text_list_var_name_ok\n");
 	int found = 0;
 	if(find($1,variables,type)){
 		found = 1;
@@ -364,7 +391,7 @@ PRINT_NUM: PRINT_INT_OP PRINT_NUM_END;
 
 PRINT_INT_OP: PRINT_INT {printf("printf(\"");};
 
-PRINT_NUM_END: VARIABLE_NAME {printf("\"%%d\",%s)",$1);};
+PRINT_NUM_END: VARIABLE_NAME {printf("%%d\",%s)",$1);};
 
 PRINT_TEXT: PRINT_TEXT_OP PRINT_TEXT_END;
 

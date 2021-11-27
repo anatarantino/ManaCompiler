@@ -46,9 +46,9 @@ FALSE "false"
 ASSIGNMENT " = "
 
 /* conditionals */
-IF "if"
+IF "if "
 ELSE "else"
-THEN "then"
+THEN " then"
 WHILE "while"
 DO "repeat:"
 END_IF "end if"
@@ -96,6 +96,8 @@ NUM_TO_LIST " to number list "
 {ELSE} {return ELSE;}
 {WHILE} {return WHILE;}
 {DO} {return DO;}
+{THEN} {return THEN;}
+{END_IF} {return END_IF;}
 {VARIABLE_NAME} {yylval.string = yytext; return VARIABLE_NAME;}
 {NEW} {return NEW;}
 {INTLIST} {return INTLIST;}

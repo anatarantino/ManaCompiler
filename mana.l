@@ -62,8 +62,8 @@ PRINT_TEXT_LIST "print text list: "
 STARTS_WITH " starts with "
 ADD "add "
 DELETE "delete "
-NUMBER_FROM_LIST " to number list "
-TEXT_FROM_LIST " to text list "
+NUMBER_FROM_LIST " from number list "
+TEXT_FROM_LIST " from text list "
 NEW "new "
 TEXT_TO_LIST " to text list "
 NUM_TO_LIST " to number list "
@@ -109,7 +109,8 @@ NUM_TO_LIST " to number list "
 {DELETE} {return DELETE;}
 {NUMBER_FROM_LIST} {return NUMBER_FROM_LIST;}
 {TEXT_FROM_LIST} {return TEXT_FROM_LIST;}
-
+{TEXT_TO_LIST} {return TEXT_TO_LIST;}
+{NUM_TO_LIST} {return NUM_TO_LIST;}
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

@@ -83,6 +83,7 @@ int remove_from_list(char * data, list * list){
 }
 
 int add_to_text_list(char * data,list * list){
+    fprintf(stderr,"86\n");
     return add_to_list(data, "TEXT_LIST", list);
 }
 

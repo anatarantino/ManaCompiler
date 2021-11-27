@@ -7,7 +7,7 @@ all:
 	@echo "Compilation done."
 
 test:
-	./mana.out < tests/helloWorld.mana > helloWorld.c
+	./mana.out < tests/helloWorld.mana -t > helloWorld.c
 	gcc -w helloWorld.c list.c numberList.c -fsanitize=address -o helloWorld.out
 	@echo "Tests compilation done."
 

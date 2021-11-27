@@ -146,6 +146,8 @@ DECLARATION: NEW TYPE VAR_NAME{
 			}
 		}
 		| NEW INTLIST NUM_LIST_VAR_NAME STARTS_WITH INTEGER{
+			strcpy(aux, $3);
+			$3 = strtok(aux, " ");
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
 					strcpy(type,"NUM_LIST");
@@ -159,6 +161,8 @@ DECLARATION: NEW TYPE VAR_NAME{
 			}
 		}
 		| NEW STLIST LIST_VAR_NAME STARTS_WITH STRING{
+			strcpy(aux, $3);
+			$3 = strtok(aux, " ");
 			if(strlen($3) < MAX_LENGTH){
 				if(!find($3,variables,type)){
 					strcpy(type,"TEXT_LIST");
@@ -171,19 +175,7 @@ DECLARATION: NEW TYPE VAR_NAME{
 				//TODO error
 			}
 		}
-		| NEW STLIST LIST_VAR_NAME{
-			if(strlen($3) < MAX_LENGTH){
-					if(!find($3,variables,type)){
-						strcpy(type,"TEXT_LIST");
-						add_to_list($3,type,variables);
-					}else{
-						//TODO error
-					}
-					printf(" = create_list(NULL)");
-				}else{
-					//TODO error
-				}
-		};
+
 
 INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| DECLARATION STRING_ASSIGN DELIMITER_OP
@@ -203,12 +195,16 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			printf("print_number_list(%s);",var);
 		}
 		| ADD STRING TEXT_TO_LIST TEXT_LIST_VAR_NAME_OK DELIMITER_OP {
+
+			fprintf(stderr,"por agregar algo a la text list\n");
 			strcpy(aux,$2);
+			tok = strtok(aux, " ");
 			strcpy(var,$4);
 			var[strlen($4)-1] = 0;
-			printf("add_to_text_list(%s,%s);",aux,var);
+			printf("add_to_text_list(%s,%s);",tok,var);
 		}
 		| ADD INTEGER NUM_TO_LIST NUM_LIST_VAR_NAME_OK DELIMITER_OP {
+			fprintf(stderr,"por agregar algo a la number list\n");
 			strcpy(aux, $4);
 			aux[strlen($4)-1]=0;
 			printf("add_to_number_list(%d,%s);",$2, aux);
@@ -315,25 +311,31 @@ NUM_LIST_VAR_NAME_OK: VARIABLE_NAME {
 		found = 1;
 	}
 	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}
-	if(strcmp(type,"NUM_LIST")!=0){
-		//error
+		yyerror("undefined variable");
+		fprintf(stderr, "Variable '%s' does not exist.\n",$1);
+		YYABORT;
+	}else if(strcmp(type,"NUM_LIST")!=0){
+		yyerror("Invalid list");
+		fprintf(stderr, "Variable '%s' is not a number list.\n",$1);
+		YYABORT;
 	}
 };
 
 TEXT_LIST_VAR_NAME_OK: VARIABLE_NAME {
+	fprintf(stderr,"en text_list_var_name_ok\n");
 	int found = 0;
 	if(find($1,variables,type)){
 		found = 1;
 	}
 	if(!found){
-		//error. variable not in variables list
-		//TODO error
-	}
-	if(strcmp(type,"TEXT_LIST")!=0){
-		//error
+		yyerror("undefined variable");
+		fprintf(stderr,"Variable '%s' does not exist.\n",$1);
+		YYABORT;
+
+	}else if(strcmp(type,"TEXT_LIST")!=0){
+		yyerror("invalid list");
+		fprintf(stderr, "Variable '%s' is not a text list.\n",$1);
+		YYABORT;
 	}
 };
 

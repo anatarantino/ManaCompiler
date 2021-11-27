@@ -4,6 +4,10 @@ start
     new number c.
     new text d.
 
-    new text list prueba.
-    add  "holis" to text list prueba.
+    new number list numeros starts with 5.
+    new text list texto starts with "jiji".
+
+    add 6 to number list numeros.
+    add 8 to number list numeros.
+
 end

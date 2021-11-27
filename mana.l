@@ -67,7 +67,7 @@ TEXT_FROM_LIST " from text list "
 NEW "new "
 TEXT_TO_LIST " to text list "
 NUM_TO_LIST " to number list "
-
+SAVE " and save inside "
 %%
 
 
@@ -113,6 +113,7 @@ NUM_TO_LIST " to number list "
 {TEXT_FROM_LIST} {return TEXT_FROM_LIST;}
 {TEXT_TO_LIST} {return TEXT_TO_LIST;}
 {NUM_TO_LIST} {return NUM_TO_LIST;}
+{SAVE} {return SAVE;}
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

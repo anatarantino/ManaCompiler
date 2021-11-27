@@ -68,7 +68,6 @@
 %token END_IF
 %token THEN
 
-
 /* aux */
 %token PRINT_INT
 %token PRINT_STRING
@@ -82,6 +81,7 @@
 %token TEXT_FROM_LIST
 %token TEXT_TO_LIST
 %token NUM_TO_LIST
+%token SAVE
 
 %type<string> TEXT_OP
 %type<string> NUM_LIST_VAR_NAME_OK
@@ -261,6 +261,14 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			strcpy(var, $4);
 			var[strlen($4)-1] = 0;
 			printf("remove_from_number_list(%s,%s);",tok, var);
+		}
+		| READ TEXT INTEGER SAVE VAR_NAME_OP DELIMITER {
+			printf(" char aux_sc%d[%d];\n", i ,MAX_LENGTH + 1);
+        		printf("scanf(\"%%s\", aux_sc%d);\n", i);
+        		printf("%s  = aux_sc%d;\n", $4,i++);
+		}
+		| READ NUMBER SAVE VAR_NAME_OP DELIMITER{
+			printf("scanf(\"%%d\", &%s);\n", $4);
 		}
 
 

@@ -8,19 +8,19 @@ all:
 
 test:
 	./mana.out < tests/hello.mana > hello.c
-	gcc -w hello.c list.c numberList.c -fsanitize=address -o hello.out
+	gcc -w hello.c list.c numberList.c -o hello.out
 
 	./mana.out < tests/factorial.mana > factorial.c
-	gcc -w factorial.c list.c numberList.c -fsanitize=address -o factorial.out
+	gcc -w factorial.c list.c numberList.c -o factorial.out
 
 	./mana.out < tests/greaterNum.mana > greaterNum.c
-	gcc -w greaterNum.c list.c numberList.c -fsanitize=address -o greaterNum.out
+	gcc -w greaterNum.c list.c numberList.c -o greaterNum.out
 
 	./mana.out < tests/textList.mana > textList.c
-	gcc -w textList.c list.c numberList.c -fsanitize=address -o textList.out
+	gcc -w textList.c list.c numberList.c -o textList.out
 
 	./mana.out < tests/numList.mana > numList.c
-	gcc -w numList.c list.c numberList.c -fsanitize=address -o numList.out
+	gcc -w numList.c list.c numberList.c -o numList.out
 
 	@echo "Tests compilation done."
 

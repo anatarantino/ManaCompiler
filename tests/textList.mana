@@ -1,0 +1,22 @@
+start
+    new text list apps starts with "twitter".
+    new number aux = 3.
+    new text app.
+    print text: "This is a list of apps.".
+    print new line.
+    print text: "so far we have: ".
+    print text list: apps.
+
+    repeat:
+        print text: "insert a new one: ".
+        read text of max length 20 and save inside app.
+        add app to text list apps.
+        print text: "so far we have: ".
+        print text list: apps.
+        print new line.
+        aux = aux-1.
+    while aux > 0.
+
+    print text: "the list is: ".
+    print text list: apps.
+end

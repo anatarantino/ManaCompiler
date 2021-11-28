@@ -13,6 +13,7 @@
 	char var[60];
 	char aux[60];
 	char * tok;
+	int i = 0;
 %}
 
 %union{
@@ -69,6 +70,7 @@
 %token THEN
 
 /* aux */
+%token PRINT_NL
 %token PRINT_INT
 %token PRINT_STRING
 %token PRINT_NUM_LIST
@@ -82,6 +84,8 @@
 %token TEXT_TO_LIST
 %token NUM_TO_LIST
 %token SAVE
+%token READ
+%token OF_MAX_LENGTH
 
 %type<string> TEXT_OP
 %type<string> NUM_LIST_VAR_NAME_OK
@@ -198,6 +202,7 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 		| DECLARATION NUM_ASSIGN DELIMITER_OP
 		| VAR_NAME_OK STRING_ASSIGN DELIMITER_OP
 		| VAR_NAME_OK NUM_ASSIGN DELIMITER_OP
+		| PRINT_NL_OP DELIMITER_OP
 		| PRINT_TEXT DELIMITER_OP
 		| PRINT_NUM DELIMITER_OP
 		| PRINT_TEXT_LIST TEXT_LIST_VAR_NAME_OK DELIMITER {
@@ -262,13 +267,16 @@ INSTRUCTION: 	DECLARATION DELIMITER_OP
 			var[strlen($4)-1] = 0;
 			printf("remove_from_number_list(%s,%s);",tok, var);
 		}
-		| READ TEXT INTEGER SAVE VAR_NAME_OP DELIMITER {
-			printf(" char aux_sc%d[%d];\n", i ,MAX_LENGTH + 1);
-        		printf("scanf(\"%%s\", aux_sc%d);\n", i);
-        		printf("%s  = aux_sc%d;\n", $4,i++);
+		| READ TEXT OF_MAX_LENGTH INTEGER SAVE VAR_NAME_OP DELIMITER {
+			strcpy(aux, $6);
+			aux[strlen($6)-1]=0;
+			printf("%s=malloc(%d);",aux,$4+1);
+        		printf("scanf(\"%%s\", %s);\n", aux);
 		}
 		| READ NUMBER SAVE VAR_NAME_OP DELIMITER{
-			printf("scanf(\"%%d\", &%s);\n", $4);
+			strcpy(aux, $4);
+			aux[strlen($4)-1]=0;
+			printf("scanf(\"%%d\", &%s);\n", aux);
 		}
 
 
@@ -422,6 +430,8 @@ PRINT_NUM_END: VARIABLE_NAME {printf("%%d\",%s)",$1);};
 PRINT_TEXT: PRINT_TEXT_OP PRINT_TEXT_END;
 
 PRINT_TEXT_OP: PRINT_STRING {printf("printf(");};
+
+PRINT_NL_OP: PRINT_NL {printf("printf(\"\\n\")");};
 
 TEXT_OP: STRING {printf("%s",$1);};
 

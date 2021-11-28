@@ -1,0 +1,18 @@
+start
+    print text: "insert a number to calculate factorial.".
+    print new line.
+    new number n.
+    read number and save inside n.
+    new number first = n.
+    new number answer = 1.
+
+    repeat:
+        answer = (answer * n).
+        n = n - 1.
+    while(n > 0).
+
+    print number: first.
+    print text: "! = ".
+    print number: answer.
+    print new line.
+end

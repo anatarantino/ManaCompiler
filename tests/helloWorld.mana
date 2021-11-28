@@ -1,5 +1,0 @@
-start
-    new text list txt starts with "abc".
-    add "chau" to text list txt.
-    print text list: txt.
-end

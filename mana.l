@@ -55,6 +55,7 @@ END_IF "end if"
 
 
 /* aux */
+PRINT_NL "print new line"
 PRINT_INT "print number: "
 PRINT_STRING "print text: "
 PRINT_NUM_LIST "print number list: "
@@ -67,7 +68,9 @@ TEXT_FROM_LIST " from text list "
 NEW "new "
 TEXT_TO_LIST " to text list "
 NUM_TO_LIST " to number list "
-SAVE " and save inside "
+SAVE "and save inside "
+READ "read "
+OF_MAX_LENGTH "of max length "
 %%
 
 
@@ -102,6 +105,7 @@ SAVE " and save inside "
 {NEW} {return NEW;}
 {INTLIST} {return INTLIST;}
 {STLIST} {return STLIST;}
+{PRINT_NL} {return PRINT_NL;}
 {PRINT_INT} {return PRINT_INT;}
 {PRINT_STRING} {return PRINT_STRING;}
 {PRINT_NUM_LIST} {return PRINT_NUM_LIST;}
@@ -114,6 +118,8 @@ SAVE " and save inside "
 {TEXT_TO_LIST} {return TEXT_TO_LIST;}
 {NUM_TO_LIST} {return NUM_TO_LIST;}
 {SAVE} {return SAVE;}
+{READ} {return READ;}
+{OF_MAX_LENGTH} {return OF_MAX_LENGTH;}
 
 [\n] {ECHO; yylineno++;};
 [\t] ECHO; //ignore whitespaces

@@ -1,0 +1,45 @@
+start
+    print text: "Hello! This is Mana, a new programming language for beginners.".
+    print new line.
+    print text: "What's your name?".
+    print new line.
+    new text name.
+    read text of max length 20 and save inside name.
+    print text: "Hello there ".
+    print text: name.
+    print new line.
+    print text: "How about you enter a number and I show you the Fibonacci series up to that term?".
+    print new line.
+    print text: "Enter a number: ".
+    new number n.
+    read number and save inside n.
+
+    print text: "Easy! The answer is: ".
+
+    new number a = 0.
+    new number b = 1.
+    new number c.
+    new number i = 3.
+
+    if n is equal to 1 then
+        print number: a.
+    end if
+
+
+    if n > 1 then
+        print number: a.
+        print text: "  ".
+        print number: b.
+    end if
+
+    repeat:
+        c = a + b.
+        print text: "  ".
+        print number: c.
+        a = b.
+        b = c.
+        i = i+1.
+    while i < n + 1 .
+    print new line.
+
+end

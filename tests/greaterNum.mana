@@ -1,0 +1,27 @@
+start
+    new number x.
+    new number y.
+
+    print text: "insert two numbers and find the greatest.".
+    print new line.
+    print text: "insert the first one:".
+    print new line.
+    read number and save inside x.
+    print text: "insert the second one:".
+    print new line.
+    read number and save inside y.
+
+    if x is equal to y then
+        print text: "both numbers are equals.".
+    end if
+
+    if x > y then
+        print text: "the greatest number is: ".
+        print number: x.
+    else
+          print text: "the greatest number is: ".
+          print number: y.
+    end if
+    print new line.
+
+end

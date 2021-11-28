@@ -1,0 +1,27 @@
+start
+
+    print text: "This is a list of numbers!".
+    print new line.
+    print text: "I will add the first 20 numbers to it.".
+    print new line.
+    new number list nums starts with 1.
+    new number aux = 2.
+
+    repeat:
+        add aux to number list nums.
+        aux = aux+1.
+    while aux < 21.
+    print text: "Now the list is: ".
+    print new line.
+    print number list: nums.
+    print new line.
+    print text: "Choose a number from the list to delete it: ".
+    read number and save inside aux.
+    delete aux from number list nums.
+    print new line.
+    print text: "The list is: ".
+    print new line.
+
+    print number list: nums.
+
+end

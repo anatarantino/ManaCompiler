@@ -18,5 +18,5 @@ Un lenguaje de programación sencillo para quienes comienzan a programar.
  ./mana.sh [archivo.mana] [nombre_ejecutable]
  ```
 ## Ejemplos
-- Para correr los ejemplos utilizar el comando `make tests`
+- Para correr los ejemplos utilizar el comando `make test`
 - Para removerlos utilar el comando `make cleanTest`
